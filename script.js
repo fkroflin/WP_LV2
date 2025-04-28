@@ -1,45 +1,36 @@
 document.addEventListener("DOMContentLoaded", function() {
-    fetch('filmtv_movies.csv')
+    fetch('/public/filmtv_movies.csv')
         .then(res => res.text())
         .then(csv => {
-            const rezultat = Papa.parse(csv, {
-                header: true,
-                skipEmptyLines: true
-            });
+            const lines = csv.split('\n');
+            
+            const headers = lines[0].split(',').map(header => header.trim());
+            const data = lines.slice(1)
+                .filter(line => line.trim() !== '') 
+                .map(line => {
+                    const values = line.split(',');
+                    return headers.reduce((obj, header, i) => {
+                        obj[header] = values[i]?.trim() || '';
+                        return obj;
+                    }, {});
+                });
 
             const tabela = document.querySelector('table');
 
-            rezultat.data.slice(0,12).forEach((film, index) => {
+            data.slice(0, 12).forEach((film) => {
+                const cellValues = [
+                    film.filmtv_id || '',
+                    film.title || '',
+                    film.year || '',
+                    film.genre || '',
+                    film.duration || '',
+                    film.country || '',
+                    film.avg_vote || ''
+                ];
+                
                 const red = document.createElement('tr');
-
-                const idCelija = document.createElement('td');
-                idCelija.textContent = film.filmtv_id || '';
-                red.appendChild(idCelija);
-
-                const naslovCelija = document.createElement('td');
-                naslovCelija.textContent = film.title || '';
-                red.appendChild(naslovCelija);
-
-                const godinaCelija = document.createElement('td');
-                godinaCelija.textContent = film.year || '';
-                red.appendChild(godinaCelija);
-
-                const zanrCelija = document.createElement('td');
-                zanrCelija.textContent = film.genre || '';
-                red.appendChild(zanrCelija);
-
-                const trajanjeCelija = document.createElement('td');
-                trajanjeCelija.textContent = film.duration || '';
-                red.appendChild(trajanjeCelija);
-
-                const drzavaCelija = document.createElement('td');
-                drzavaCelija.textContent = film.country || '';
-                red.appendChild(drzavaCelija);
-
-                const ocjenaCelija = document.createElement('td');
-                ocjenaCelija.textContent = film.avg_vote || '';
-                red.appendChild(ocjenaCelija);
-
+                red.innerHTML = cellValues.map(value => `<td>${value}</td>`).join('');
+                
                 tabela.appendChild(red);
             });
         })
