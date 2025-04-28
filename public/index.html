@@ -22,6 +22,25 @@
     <main>
         <section>
             <h2 class="tablica">Tablica Podataka</h2>
+            <div class="filter-container">
+                <div class="filter-group">
+                    <label for="country-filter">Država:</label>
+                    <input type="text" id="country-filter" placeholder="npr. USA">
+                </div>
+                <div class="filter-group">
+                    <label>Žanr:</label>
+                    <div class="radio-group" id="genre-filter">
+                        <label><input type="radio" name="genre" value="" checked> Svi</label>
+                        <!-- Genres will be populated dynamically -->
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="rating-filter">Minimalna ocjena:</label>
+                    <input type="range" id="rating-filter" min="0" max="10" step="0.1" value="0">
+                    <span id="rating-value">0</span>
+                </div>
+                <button id="filter-button">Filtriraj</button>
+            </div>
             <table>
                 <thead>
                     <tr>
